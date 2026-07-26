@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - BookMySeat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        .booking-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        .cancel-btn {
+            background: #dc2626;
+            border: none;
+            cursor: pointer;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+        }
+        .cancel-btn:hover {
+            background: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Home Button Added Here -->
+    <a href="{% url 'home' %}" class="btn">⬅ Back to Home</a>
+
+    <h2>My Booked Tickets</h2>
+
+    {% if bookings %}
+        {% for booking in bookings %}
+            <div class="booking-card">
+                <h3>{{ booking.show.movie.title }}</h3>
+                <p><strong>Theater / Show:</strong> {{ booking.show }}</p>
+                <p><strong>Seat Number:</strong> {{ booking.seat.seat_number }}</p>
+                <p><strong>Booked On:</strong> {{ booking.booked_at }}</p>
+                
+                <!-- Cancel Ticket Form -->
+                <form action="{% url 'cancel_ticket' booking.id %}" method="POST" style="margin-top: 10px;">
+                    {% csrf_token %}
+                    <button type="submit" class="cancel-btn">Cancel Ticket</button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>You have no booked tickets yet.</p>
+    {% endif %}
+</div>
+
+</body>
+</html>

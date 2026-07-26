@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookMySeat - Movie Tickets</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333333;
+        }
+
+        /* Top Header Navbar */
+        .main-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 12px 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            width: 60%;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #f84464;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: #333333;
+        }
+
+        .search-box {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 9px 15px 9px 38px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-box::before {
+            content: "🔍";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 13px;
+            color: #888;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .user-link {
+            text-decoration: none;
+            color: #333333;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .user-link:hover {
+            color: #f84464;
+        }
+
+        .btn-signin {
+            background-color: #f84464;
+            color: #ffffff;
+            padding: 6px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Logout Button CSS */
+        .btn-logout {
+            background-color: #e74c3c;
+            color: #ffffff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-logout:hover {
+            background-color: #c0392b;
+        }
+
+        /* Secondary Sub-Header Navigation */
+        .sub-header {
+            background-color: #222539;
+            padding: 10px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sub-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .sub-nav a {
+            color: #cccccc;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 400;
+            transition: color 0.2s;
+        }
+
+        .sub-nav a:hover, .sub-nav a.active {
+            color: #ffffff;
+        }
+
+        /* Main Carousel Banner */
+        .banner-container {
+            width: 100%;
+            background: linear-gradient(90deg, #1f2533, #2b3148);
+            padding: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .banner-card {
+            width: 90%;
+            max-width: 1200px;
+            height: 220px;
+            background: linear-gradient(135deg, #02b3e4, #02ccba);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .banner-text h1 {
+            font-size: 38px;
+            font-weight: 900;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+        }
+
+        .banner-text p {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .offer-badge {
+            background-color: #ffd700;
+            color: #222;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Recommended Movies Section */
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333333;
+        }
+
+        .see-all {
+            color: #f84464;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Movie Grid & Card Design */
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 25px;
+        }
+
+        .movie-card {
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .poster-wrapper {
+            width: 100%;
+            height: 310px;
+            background-color: #e0e0e0;
+            overflow: hidden;
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .movie-details {
+            padding: 12px 10px;
+        }
+
+        .movie-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #222222;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .movie-sub {
+            font-size: 13px;
+            color: #666666;
+        }
+
+        .btn-book-tickets {
+            margin-top: 10px;
+            display: block;
+            width: 100%;
+            background-color: #f84464;
+            color: white;
+            text-align: center;
+            padding: 8px 0;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Header Bar -->
+    <div class="main-header">
+        <div class="header-left">
+            <a href="{% url 'home' %}" class="logo">book<span>my</span>seat</a>
+            <div class="search-box">
+                <input type="text" placeholder="Search for Movies, Events, Plays, Sports and Activities">
+            </div>
+        </div>
+        
+        <div class="header-right">
+            {% if user.is_authenticated %}
+                <a href="{% url 'my_bookings' %}" class="user-link">My Bookings</a>
+                <span class="user-link">Hi, {{ user.username }}</span>
+                
+                <!-- Logout Form for Django Compatibility -->
+                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn-signin">Sign in</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Secondary Navigation -->
+    <div class="sub-header">
+        <div class="sub-nav">
+            <a href="#" class="active">Movies</a>
+            <a href="#">Stream</a>
+            <a href="#">Events</a>
+            <a href="#">Plays</a>
+            <a href="#">Sports</a>
+            <a href="#">Activities</a>
+        </div>
+    </div>
+
+    <!-- Hero Offer Banner -->
+    <div class="banner-container">
+        <div class="banner-card">
+            <div class="banner-text">
+                <h1>Hyderabad</h1>
+                <p>Book movie tickets online & get amazing offers!</p>
+            </div>
+            <div class="offer-badge">
+                BUY 3 GET 1 FREE
+            </div>
+        </div>
+    </div>
+
+    <!-- Recommended Movies Section -->
+    <div class="main-container">
+        <div class="section-header">
+            <h2 class="section-title">Recommended Movies</h2>
+            <a href="#" class="see-all">See All ›</a>
+        </div>
+
+        <div class="movie-grid">
+            {% for movie in movies %}
+                <a href="{% url 'movie_detail' movie.pk %}" class="movie-card">
+                    <div class="poster-wrapper">
+                        {% if movie.poster %}
+                            <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" class="movie-poster">
+                        {% else %}
+                            <img src="https://via.placeholder.com/300x400?text=Poster" alt="No Poster" class="movie-poster">
+                        {% endif %}
+                    </div>
+                    <div class="movie-details">
+                        <div class="movie-title">{{ movie.title }}</div>
+                        <div class="movie-sub">{{ movie.language }} • {{ movie.duration }} mins</div>
+                        <span class="btn-book-tickets">Book Tickets</span>
+                    </div>
+                </a>
+            {% empty %}
+                <p style="grid-column: 1/-1; text-align: center; color: #777;">No movies currently running.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>

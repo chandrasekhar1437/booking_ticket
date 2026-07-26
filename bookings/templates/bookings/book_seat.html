@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Seat - BookMySeat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        h2, h3 {
+            color: #333;
+        }
+        .seat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .seat-item {
+            padding: 10px;
+            background: #e2e8f0;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .booked-seat {
+            background-color: #cbd5e1 !important;
+            opacity: 0.6;
+            cursor: not-allowed !important;
+        }
+        .seat-item input {
+            margin-right: 5px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 5px;
+            margin-bottom: 10px;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        .btn-secondary {
+            background: #64748b;
+        }
+        .btn-secondary:hover {
+            background: #475569;
+        }
+        .messages {
+            color: red;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Messages Display -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <h2>Book Your Seat</h2>
+    <h3>Show Details: {{ show.movie.title }}</h3>
+    <p><strong>Time:</strong> {{ show.start_time }}</p>
+
+    <!-- Navigation Buttons -->
+    <div style="margin-bottom: 20px;">
+        <a href="{% url 'home' %}" class="btn btn-secondary">⬅ Home</a>
+        <a href="{% url 'my_bookings' %}" class="btn">🎟️ My Bookings</a>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <h4>Select a Seat:</h4>
+        <div class="seat-grid">
+            {% for seat in seats %}
+                <label class="seat-item {% if seat.id in booked_seat_ids %}booked-seat{% endif %}">
+                    <input type="radio" name="seat" value="{{ seat.id }}" 
+                           {% if seat.id in booked_seat_ids %}disabled{% else %}required{% endif %}>
+                    {{ seat.seat_number }} 
+                    {% if seat.id in booked_seat_ids %}<br><small>(Booked)</small>{% endif %}
+                </label>
+            {% empty %}
+                <p>No seats available.</p>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn">Confirm Booking & Send Mail</button>
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ movie.title }} - BookMySeat{% endblock %}
+
+{% block extra_css %}
+<style>
+    .movie-detail-container {
+        display: flex;
+        gap: 30px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+
+    .poster-section {
+        flex: 1;
+        min-width: 250px;
+        max-width: 320px;
+    }
+
+    .poster-image {
+        width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .info-section {
+        flex: 2;
+        min-width: 300px;
+    }
+
+    .movie-title {
+        font-size: 28px;
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+
+    .badge {
+        display: inline-block;
+        background-color: #e74c3c;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    .movie-description {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #555;
+        margin-bottom: 20px;
+    }
+
+    .shows-section {
+        margin-top: 30px;
+        border-top: 2px solid #eee;
+        padding-top: 20px;
+    }
+
+    .show-card {
+        background-color: #f8f9fa;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .theater-name {
+        font-size: 18px;
+        font-weight: bold;
+        color: #1a252f;
+    }
+
+    .show-time {
+        color: #27ae60;
+        font-weight: 600;
+    }
+
+    .btn-book {
+        background-color: #27ae60;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.2s;
+    }
+
+    .btn-book:hover {
+        background-color: #219150;
+    }
+
+    .btn-back {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .btn-back:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <a href="{% url 'home' %}" class="btn-back">← Back to Movies</a>
+
+    <div class="movie-detail-container">
+        <div class="poster-section">
+            {% if movie.poster %}
+                <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" class="poster-image">
+            {% else %}
+                <div class="poster-image" style="height: 350px; background-color: #ddd; display: flex; align-items: center; justify-content: center; color: #777;">
+                    No Poster Available
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="info-section">
+            <h1 class="movie-title">{{ movie.title }}</h1>
+            <span class="badge">{{ movie.language }}</span>
+            <p><strong>Duration:</strong> {{ movie.duration }} minutes</p>
+            {% if movie.release_date %}
+                <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
+            {% endif %}
+            
+            <h3 style="margin-top: 15px;">Synopsis</h3>
+            <p class="movie-description">
+                {{ movie.description|default:"No description available for this movie." }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Available Shows Section -->
+    <div class="shows-section">
+        <h2>Available Shows & Theaters</h2>
+        <br>
+        {% for show in shows %}
+            <div class="show-card">
+                <div>
+                    <div class="theater-name">{{ show.theater.name }} ({{ show.theater.city }})</div>
+                    <div class="show-time">Time: {{ show.show_time|date:"d M Y, h:i A" }}</div>
+                    <div><strong>Price:</strong> ₹{{ show.price }}</div>
+                </div>
+                <div>
+                    <a href="{% url 'book_seat' show.id %}" class="btn-book">Select Seats</a>
+                </div>
+            </div>
+        {% empty %}
+            <p style="color: #7f8c8d;">No shows currently scheduled for this movie.</p>
+        {% endfor %}
+    </div>
+{% endblock %}
