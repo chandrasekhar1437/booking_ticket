@@ -45,7 +45,7 @@ def my_bookings(request):
     context = {'bookings': bookings}
     return render(request, 'bookings/my_bookings.html', context)
 
-# 5. Book Seat (Tracks booked seats & sends Gmail confirmation)
+# 5. Book Seat View
 @login_required
 def book_seat(request, show_id):
     show = get_object_or_404(Show, id=show_id)
@@ -63,6 +63,11 @@ def book_seat(request, show_id):
 
         seat = get_object_or_404(Seat, id=selected_seat_id)
 
+        # ఆ సీట్ ఇప్పటికే బుక్ అయి ఉందో లేదో ముందుగా చెక్ చేయడం
+        if Booking.objects.filter(show=show, seat=seat).exists():
+            messages.error(request, "This seat is already booked. Please choose another one.")
+            return redirect('book_seat', show_id=show_id)
+
         try:
             booking = Booking.objects.create(
                 user=request.user,
@@ -70,10 +75,10 @@ def book_seat(request, show_id):
                 show=show,
             )
         except IntegrityError:
-            messages.error(request, "This seat is already booked. Please choose another one.")
+            messages.error(request, "This seat is already booked for this show.")
             return redirect('book_seat', show_id=show_id)
 
-        # --- SEND CONFIRMATION TICKET TO USER GMAIL ---
+        # --- GMAIL CONFIRMATION ---
         user_email = request.user.email
         if user_email:
             subject = "🎟️ Booking Confirmed - BookMySeat"
@@ -89,12 +94,12 @@ def book_seat(request, show_id):
                     message,
                     settings.DEFAULT_FROM_EMAIL,
                     [user_email],
-                    fail_silently=False,
+                    fail_silently=True,  # మెయిల్ వెళ్లకపోయినా సర్వర్ ఎర్రర్ రాకుండా ఆపుతుంది
                 )
             except Exception as e:
                 print(f"Email failed to send: {e}")
 
-        messages.success(request, "Ticket booked successfully! Confirmation email sent.")
+        messages.success(request, "Ticket booked successfully!")
         return redirect('my_bookings')
 
     context = {

@@ -10,7 +10,7 @@ SECRET_KEY = 'django-insecure-replace-this-with-your-actual-secret-key'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['booking-ticket-for-movie.onrender.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'booking-ticket-for-movie.onrender.com']
 
 # Application definition
 # 'bookings' is placed FIRST so your custom templates override default admin templates
@@ -113,6 +113,8 @@ EMAIL_HOST_USER = 'chandrasekharnunna983@gmail.com'
 
 # Put your 16-character Google App Password here (no spaces):
 EMAIL_HOST_PASSWORD = 'wkdsdjmbbfrnspie'
+
+EMAIL_TIMEOUT =5
 
 # The display name/email recipients see when receiving emails:
 DEFAULT_FROM_EMAIL = 'BookMySeat <chandrasekharnunna983@gmail.com>'
