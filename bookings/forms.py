@@ -3,6 +3,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Booking, Movie, Show
 
+
+
 # 1. యూజర్ రిజిస్ట్రేషన్ ఫారమ్ (Signup Form)
 class SignupForm(UserCreationForm):
     email = forms.EmailField(
@@ -33,10 +35,7 @@ class MovieForm(forms.ModelForm):
         fields = ['title', 'description', 'duration', 'language', 'release_date', 'poster']
         
         
-        
-from django import forms
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+ 
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -44,3 +43,19 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email']
+        
+        
+
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django import forms
+
+class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(
+        required=True, 
+        help_text="Required. Enter a valid email address for booking confirmations."
+    )
+
+    class Meta:
+        model = User
+        fields = ('username', 'email')
